@@ -84,17 +84,14 @@ function Plot(id) {
     });
 }
 
-// create a function for the gauge
+// Gauge function
 function gauge (id) {
-    // read the data
     d3.json("static/data/samples.json").then(function(data) {
         var samples = data.metadata
-        // filter samples by the id 
         var samples = samples.filter(sampleID => sampleID.id == id)[0];
-        // grab the wfreq
         var washing_freq = samples.wfreq;
 
-        // create the trace for the gauge
+        // Tracer for the guage
         var trace = [
             {
               domain: { x: [0, 1], y: [0, 1] },
@@ -116,32 +113,27 @@ function gauge (id) {
             }
           ];
           
-          // create layout
           var layout = { width: 600, height: 450, margin: { t: 0, b: 0 } };
 
-          // create the gauge chart 
           Plotly.newPlot('gauge', trace, layout);
 });
 }
 
 // create a function for the demographics info table
 function demographics(id) {
-    // read the data
     d3.json("static/data/samples.json").then(function(data) {
         console.log(data);
         var metadata = data.metadata;
         console.log(metadata);
-        // filter samples by the id 
+        // Filtering of samples
         var result  = metadata.filter(metadatum => metadatum.id.toString() === id)[0];
         console.log(result);
         
-        // select the demographic table
         var getDemographic = d3.select("#sample-metadata");
         
-        // clear the demographic table
         getDemographic.html("");
 
-        // loop through the info in the metadata and append results to table
+        // Create loop to insert data
         Object.entries(result).forEach((key) => {   
                 console.log(key)
                 getDemographic.append("h6").text(key[0] + ": " + key[1] + "\n");    
