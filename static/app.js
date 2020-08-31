@@ -1,51 +1,46 @@
-// create the initial function that will be default
-function init() {
-    // select dropdown menu
+// Initialization function
+
+function start() {
     var dropdown = d3.select("#selDataset");
 console.log("helo world")
-    // read the data
     d3.json("static/data/samples.json").then(function(data) {
         console.log(data);
         var names = data.names;
-        // put a dropdown option for each name id
         names.forEach(function(name) {
             dropdown.append("option").text(name).property("value");
     });
         var initId = names[0];
 
-        // plot the initial bar chart, bubble chart, demographics table, and gauge for the first ID
+        // Plot the demographics and gauge on the webpage
         Plot(initId);
         demographics(initId);
         gauge(initId);
 })
 }
 
-// the function that runs on a changed selection
+// Created function for changes
 function optionChanged(id) {
     Plot(id);
     demographics(id);
     gauge(id);
 }
 
-// create a function that plots the bar chart and the bubble chart 
+// Bar chart and bubble chart
 function Plot(id) {
-    //read the data
+    // Read in the json data
     d3.json("static/data/samples.json").then(function(data) {
         console.log(data);
         var samples = data.samples
-        // filter samples by the id 
+        // Filter
         var samples = samples.filter(sampleID => sampleID.id === id)[0];
         console.log(samples)
-        // get only first 10 sample values
+        // Prepare the first 10 values
         var sampleValues = samples.sample_values.slice(0, 10).reverse();
-        // get only first 10 otu id's
         var otuIds = samples.otu_ids.slice(0, 10).reverse();
-        // format "OTU" before each otu ID
         var otuIdslabels = otuIds.map(id_label => "OTU" + id_label);
-        // get only the first 10 otu labels 
         var sampleLabels = samples.otu_labels.slice(0, 10);
 
-        // create the trace for the bar plot 
+        // Trace for bar plot
         var trace = {
             x: sampleValues,
             y: otuIdslabels,
@@ -56,17 +51,16 @@ function Plot(id) {
 
         var data = [trace]
 
-        // create layout
         var layout = {
             title: "Top 10 OTUs",
             xaxis: {title: "Sample Values"},
             yaxis: {title: "OTU"}
         }
 
-        // create the bar plot 
+        // Bar Plot
         Plotly.newPlot("bar", data, layout);
 
-        // create the trace for the bubble chart 
+        // Bubble plot
         var trace1 = {
             x: samples.otu_ids,
             y: samples.sample_values,
@@ -78,7 +72,6 @@ function Plot(id) {
             text: samples.otu_labels
         };
         
-        // create layout
         var layout = {
             xaxis:{title: "OTU IDs"},
             yaxis:{title: "Sample Values"}
@@ -86,7 +79,6 @@ function Plot(id) {
         
         var data = [trace1];
 
-        // create the bubble chart 
         Plotly.newPlot("bubble", data, layout); 
         
     });
@@ -157,4 +149,4 @@ function demographics(id) {
     });
 }
 
-init();
+start();
